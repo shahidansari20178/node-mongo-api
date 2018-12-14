@@ -9,6 +9,15 @@ var app=express();
 
 app.use(bodyParser.json());
 
+
+app.get('/todos',(req,res)=>{
+    user.find().then((todos)=>
+                    {
+       res.send(todos) ;
+    },(err)=>{
+        res.status(400).send(err)    ;
+    });
+});
 app.post('/todos',(req,res)=>{
         // console.log("Passed data :",req.body);
     /*var td=new todo(
