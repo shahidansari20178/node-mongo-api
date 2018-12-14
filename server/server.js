@@ -48,7 +48,9 @@ app.post('/todos',(req,res)=>{
 app.listen(4000,()=>
           {
     console.log('connected successfully 4000');
-})
+});
+
+module.exports={app};
 
 /*var  mongoose=require('mongoose');
 mongoose.Promise=global.Promise;

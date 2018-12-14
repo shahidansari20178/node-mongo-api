@@ -1,13 +1,13 @@
 var mongoose=require('mongoose');
 
-var todo =mongoose.model('todo',{
+var todo =mongoose.model('user',{
     
     email:
     {
         type:String,
         //default:null,
         minlength:1,
-        required:true,
+       // required:true,
         trim:1                
     }
 });
