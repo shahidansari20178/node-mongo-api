@@ -29,8 +29,8 @@ app.post('/todos',(req,res)=>{
     var td=new user(
     {
         name:req.body.name,
-        age:req.body.age,
-        location:req.body.location
+        salary:req.body.salary,
+        company:req.body.company
         
     });
     

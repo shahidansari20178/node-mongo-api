@@ -1,15 +1,15 @@
 var mongoose=require('mongoose');
 
-var user=mongoose.model('user4',{
+var user=mongoose.model('userYash',{
     name:{
       type:String  ,
        // ,require:true,
         minlength:1
     },
-     age:{
+     salary:{
          type:Number
      },
-     location:{
+     company:{
          type:String
      }     
  });
