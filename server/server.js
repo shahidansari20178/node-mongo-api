@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var {ObjectID}=require('mongodb');
+const _=require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser');
+const {ObjectID}=require('mongodb');
 
 const port=process.env.PORT || 4000;
 
@@ -60,7 +61,7 @@ app.delete('/todos/:id', (req, res) => {
 app.get('/todos', (req, res) => {
     user.find().then((todos) => {
         res.send(todos);
-    }, (err) => {
+    }, (err) => {   
         res.status(400).send(err);
     });
 });
@@ -88,6 +89,36 @@ app.post('/todos', (req, res) => {
     });
 
 });
+
+app.patch('/todos/:id',(req,res)=>
+{
+    var id=req.params.id;
+    var body=_.pick(req.body,['name','salary','company']);
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+    if(body.name && body.salary && body.company)
+    {
+            
+    }
+    else{
+        
+        body.name=body.name;
+        body.salary=body.salary;
+        body.company=body.company;
+    }
+    user.findByIdAndUpdate(id,{$set:body},{new:true}).then((lanet)=>{
+        if(!user)
+            {
+                return res.status(404).send();
+            }
+        res.send({lanet});
+    }).catch((e)=>
+            {
+        res.status(400).send();
+    }); 
+}
+);
 
 
 app.listen(port, () => {
