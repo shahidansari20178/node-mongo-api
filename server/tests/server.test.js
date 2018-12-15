@@ -1,5 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 const {
     app
 } = require('./../server');
@@ -10,8 +11,10 @@ const {
 
 const user1 = [
     {
+        _id:new ObjectID(),
         name: "shahid"
     }, {
+        _id:new ObjectID(),
         name: "aman"
     }];
 
@@ -84,5 +87,42 @@ describe('POST /todos', () => {
                  done();
              }).catch((e)=>done(e));*/
         });
+    });
+
+ describe('GET/todos/', () => {
+        it('should return todo ', (done) => {            
+            //console.log(`todos/${user1[0]._id.toHexString()}`);
+            request(app)
+                .get(`/todos/${user1[0]._id.toHexString()}`)
+                .expect(200)
+                .expect((res) => {
+                    //console.log(res.body);
+                    expect(res.body.todos.name).toBe(user1[0].name);
+                })
+                .end(done);
+            
+            
+            /*user.find({name}).then((lanet)=>{
+                 expect(lanet.length).toBe(lanet.length);
+                 expect(lanet[0].name).toBe(name);
+                 done();
+             }).catch((e)=>done(e));*/
+        });
+     it('should return 404 if todo not found ',(done)=>
+       {
+         var hexId=new ObjectID().toHexString();
+            request(app)
+         .get(`/todos/${hexId}`)
+         .expect(404)
+         .end(done);
+     });
+     it('should return 404 for non object ids ',(done)=>
+       {
+         request(app)
+         .get(`/todos/123abc`)
+         .expect(404)
+         .end(done);
+     }); 
+     
     });
 //https://github.com/shahidansari20178/node-mongo-api.git
