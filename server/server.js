@@ -21,10 +21,12 @@ app.use(bodyParser.json());
 
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
+    console.log(id);
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
     }
-    user.findById(id).then((todos) => {
+    user.find(id).then((todos) => {
+        console.log(todos);
         if (!todos) {
             return res.status(404).send();
         }
@@ -34,6 +36,7 @@ app.get('/todos/:id', (req, res) => {
     }).catch((e) => {
         res.status(400).send();
     });
+    
 });
 
 app.delete('/todos/:id', (req, res) => {
