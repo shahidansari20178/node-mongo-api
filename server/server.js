@@ -2,6 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var {ObjectID}=require('mongodb');
 
+const port=process.env.PORT || 4000;
+
 var {
     mongoose
 } = require('./db/mongoose.js');
@@ -68,8 +70,8 @@ app.post('/todos', (req, res) => {
 });
 
 
-app.listen(4000, () => {
-    console.log('connected successfully 4000');
+app.listen(port, () => {
+    console.log(`connected successfully ${port}`);
 });
 
 module.exports = {
