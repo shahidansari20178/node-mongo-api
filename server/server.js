@@ -7,9 +7,12 @@ if (env === 'development') {
     process.env.PORT = 4000;
     process.env.MONGODB_URI = 'mongodb://localhost:27017/todoAppTest';
 }
+
+
 const _ = require('lodash');
 const express = require('express');
 const hbs = require('hbs');
+var session = require('express-session');
 const jwt=require('jsonwebtoken');
 const bodyParser = require('body-parser');
 //const hbs = require('express-handlebars');
@@ -29,6 +32,8 @@ var {
     todo
 } = require('./model/todo.js');
 //var path = require('./../views');
+//var path = require('./../views');
+var sess;
 var app = express();
 console.log("shahid",__dirname);
 hbs.registerPartials(__dirname+'/views');
@@ -37,13 +42,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(session({secret: 'ssshhhhh'}));
+
 //app.set('views',path.join(__dirname+'/views'));
 app.set('view engine', 'hbs');
 app.use("/index", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
+    res.render('index.hbs');
 });
 app.use("/login", (req, res) => {
-    res.sendFile(__dirname + "/login.html");
+    res.render('login.hbs');
 });
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
@@ -66,10 +73,21 @@ app.get('/todos/:id', (req, res) => {
 });
 app.get('/', (req, res) => {
         
+        //res.redirect('/login');
+    sess = req.session;
+//Session set when user Request our app via URL
+    if(sess.email) {
+        res.redirect('/index');
+    }
+    else {
         res.redirect('/login');
+    }
+    
 });
 
 app.get('/edit/:id', (req, res) => {
+    
+    
     var id = req.params.id;
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
@@ -85,9 +103,18 @@ app.get('/edit/:id', (req, res) => {
     });
 });
 
+app.get('/logout',function(req,res){
+req.session.destroy(function(err) {
+  if(err) {
+    console.log(err);
+  } else {
+    res.redirect('/login');
+  }
+});
+});
 
 app.post('/loginUser', (req, res) => {
-    
+      sess = req.session;
     
     var ps=jwt.sign(req.body.password,"abc");
     var s={email:req.body.username,password:ps};
@@ -97,11 +124,14 @@ app.post('/loginUser', (req, res) => {
     {
         if(!todos)
         {
-            res.redirect('/login');
+            //res.redirect('/login');
+            res.render('login.hbs', {
+            msg:"Entered Credential Wrong"
+        });
                 
         }
         else{
-            
+             sess.email=req.body.username;
             res.redirect('/index');
         }
         
@@ -150,7 +180,10 @@ app.delete('/todos/:id', (req, res) => {
 
 app.get('/fetch', (req, res) => {
 
-
+if(sess.email==='undefined')
+    {
+        res.redirect('/');    
+    }
     //res.send('<h1>hello express</h2>');
     /*res.send({
         name:"shahid",
