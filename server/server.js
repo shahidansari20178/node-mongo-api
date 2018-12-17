@@ -130,7 +130,7 @@ app.get('/fetch', (req, res) => {
     });*/
 
     user.find().then((todos) => {
-        res.render('./../views/home.hbs', {
+    res.render('../views/home.hbs', {
             todos
         });
     }, (err) => {
