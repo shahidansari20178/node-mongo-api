@@ -28,6 +28,7 @@ var {
 } = require('./model/todo.js');
 
 var app = express();
+hbs.registerPartials(__dirname+'/views');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
