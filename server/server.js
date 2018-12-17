@@ -124,7 +124,7 @@ app.get('/fetch', (req, res) => {
     });*/
 
     user.find().then((todos) => {
-        res.render('home.hbs', {
+        res.render('./home.hbs', {
             todos
         });
     }, (err) => {
