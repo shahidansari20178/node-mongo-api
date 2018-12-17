@@ -11,6 +11,7 @@ const _ = require('lodash');
 const express = require('express');
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
+//const hbs = require('express-handlebars');
 const {
     ObjectID
 } = require('mongodb');
@@ -26,13 +27,16 @@ var {
 var {
     todo
 } = require('./model/todo.js');
-
+//var path = require('./../views');
 var app = express();
+console.log("shahid",__dirname);
 hbs.registerPartials(__dirname+'/views');
 app.use(bodyParser.json());
+//app.engine('hbs',hbs({extension:'hbs'}));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+//app.set('views',path.join(__dirname+'/views'));
 app.set('view engine', 'hbs');
 app.use("/index", (req, res) => {
     res.sendFile(__dirname + "/index.html");
@@ -125,7 +129,7 @@ app.get('/fetch', (req, res) => {
     });*/
 
     user.find().then((todos) => {
-        res.render('home.hbs', {
+        res.render('./../views/home.hbs', {
             todos
         });
     }, (err) => {
