@@ -1,15 +1,40 @@
-var mongoose=require('mongoose');
+var mongoose = require('mongoose');
+var validator = require('validator');
+var todo = mongoose.model('users', {
 
-var todo =mongoose.model('user',{
-    
-    email:
-    {
-        type:String,
+    email: {
+        type: String,
         //default:null,
-        minlength:1,
-       // required:true,
-        trim:1                
-    }
+        minlength: 1,
+        // required:true,
+        unique:true,
+        trim: 1,
+        validate: {
+            validator: (value) => {
+                return validator.isEmail(value);
+            },
+            message: '{VALUE} is not a valid email'
+        }
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 6
+    },
+    tokens: [
+        {
+            access: {
+                type: String,
+                required: true
+            },
+            token: {
+                type: String,
+                required: true
+            }
+        },
+            ]
 });
 
-module.exports={ todo };
+module.exports = {
+    todo
+};

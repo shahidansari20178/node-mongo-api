@@ -10,6 +10,7 @@ if (env === 'development') {
 const _ = require('lodash');
 const express = require('express');
 const hbs = require('hbs');
+const jwt=require('jsonwebtoken');
 const bodyParser = require('body-parser');
 //const hbs = require('express-handlebars');
 const {
@@ -129,7 +130,7 @@ app.get('/fetch', (req, res) => {
     });*/
 
     user.find().then((todos) => {
-        res.render('../views/home.hbs', {
+        res.render('./../views/home.hbs', {
             todos
         });
     }, (err) => {
@@ -168,6 +169,27 @@ app.post('/todos', (req, res) => {
         // res.send(doc);
         //res.sendFile(__dirname + "/index.html");
         res.redirect('/fetch');
+    }, (e) => {
+        res.status(400).send(e);
+    });
+
+});
+
+app.post('/users', (req, res) => {
+    
+    
+    var pass=jwt.sign(req.body.password,"abc");
+  //  console.log(pass);
+    var td = new todo({
+        email: req.body.email,
+        password: pass
+    });
+    var dec=jwt.verify(pass,"abc");
+   // console.log(dec);
+    td.save().then((doc) => {
+         res.send(doc);
+        //res.sendFile(__dirname + "/index.html");
+        
     }, (e) => {
         res.status(400).send(e);
     });
