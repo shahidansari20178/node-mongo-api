@@ -42,6 +42,9 @@ app.set('view engine', 'hbs');
 app.use("/index", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
+app.use("/login", (req, res) => {
+    res.sendFile(__dirname + "/login.html");
+});
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
     console.log(id);
@@ -63,7 +66,7 @@ app.get('/todos/:id', (req, res) => {
 });
 app.get('/', (req, res) => {
         
-        res.redirect('/index');
+        res.redirect('/login');
 });
 
 app.get('/edit/:id', (req, res) => {
@@ -82,6 +85,31 @@ app.get('/edit/:id', (req, res) => {
     });
 });
 
+
+app.post('/loginUser', (req, res) => {
+    
+    
+    var ps=jwt.sign(req.body.password,"abc");
+    var s={email:req.body.username,password:ps};
+    console.log(s);
+    //console.log(ps);
+    todo.findOne(s).then((todos)=>
+    {
+        if(!todos)
+        {
+            res.redirect('/login');
+                
+        }
+        else{
+            
+            res.redirect('/index');
+        }
+        
+    },(err)=>{
+        res.status(400).send(err);
+        
+    });
+});
 
 app.get('/delete/:id', (req, res) => {
     var id = req.params.id;
