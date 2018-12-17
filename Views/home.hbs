@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <style>
+            #content
+            {
+                min-height:600px;
+                width:100%;
+            }
+        </style>
+    </head>
+    <body>
+        <center>
+        <a href="/index">Add New</a>
+        <br>
+        <table border='1'> 
+            <tr>
+                <th>Name</th>
+                <th>Salary</th>
+                <th>Company</th>
+                <th>Action</th>
+                <th>Action</th>
+            </tr>
+            {{#each todos}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.salary}}</td>
+                <td>{{this.company}}</td>
+                <td><a href="/delete/{{_id}}">Delete</a></td>
+                <td><a href="/edit/{{_id}}">Edit</a></td>
+            </tr>
+            {{/each}}
+        </table>
+        </center>
+        <script>
+            
+        </script>
+    </body>
+</html>
