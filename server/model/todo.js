@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var validator = require('validator');
-var todo = mongoose.model('users', {
+var todo = mongoose.model('useryashes', {
 
     email: {
         type: String,

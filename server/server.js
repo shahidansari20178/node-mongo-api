@@ -13,7 +13,7 @@ const _ = require('lodash');
 const express = require('express');
 const hbs = require('hbs');
 var session = require('express-session');
-const jwt=require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 //const hbs = require('express-handlebars');
 const {
@@ -35,19 +35,27 @@ var {
 //var path = require('./../views');
 var sess;
 var app = express();
-console.log("shahid",__dirname);
-hbs.registerPartials(__dirname+'/views');
+console.log("shahid", __dirname);
+hbs.registerPartials(__dirname + '/views');
 app.use(bodyParser.json());
 //app.engine('hbs',hbs({extension:'hbs'}));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(session({secret: 'ssshhhhh'}));
+app.use(session({
+    secret: 'ssshhhhh'
+}));
 
 //app.set('views',path.join(__dirname+'/views'));
 app.set('view engine', 'hbs');
 app.use("/index", (req, res) => {
-    res.render('index.hbs');
+    sess = req.session;
+    //Session set when user Request our app via URL
+    if (sess.email) {
+        res.render('index.hbs');
+    } else {
+        res.redirect('/login');
+    }
 });
 app.use("/login", (req, res) => {
     res.render('login.hbs');
@@ -72,91 +80,129 @@ app.get('/todos/:id', (req, res) => {
 
 });
 app.get('/', (req, res) => {
-        
-        //res.redirect('/login');
+
+    //res.redirect('/login');
     sess = req.session;
-//Session set when user Request our app via URL
-    if(sess.email) {
+    //Session set when user Request our app via URL
+    if (sess.email) {
         res.redirect('/index');
-    }
-    else {
+    } else {
         res.redirect('/login');
     }
-    
+
 });
 
 app.get('/edit/:id', (req, res) => {
-    
-    
-    var id = req.params.id;
-    if (!ObjectID.isValid(id)) {
-        return res.status(404).send();
+
+    sess = req.session;
+    if (sess.email) {
+        var id = req.params.id;
+        if (!ObjectID.isValid(id)) {
+            return res.status(404).send();
+        }
+
+        user.findById(id).then((todos) => {
+            //console.log(todos);
+            res.render('edit.hbs', {
+                todos
+            });
+        }, (err) => {
+            res.status(400).send(err);
+        });
+    } else {
+        res.redirect('/');
     }
 
-    user.findById(id).then((todos) => {
-        //console.log(todos);
-        res.render('edit.hbs', {
-            todos
-        });
-    }, (err) => {
-        res.status(400).send(err);
-    });
 });
 
-app.get('/logout',function(req,res){
-req.session.destroy(function(err) {
-  if(err) {
-    console.log(err);
-  } else {
-    res.redirect('/login');
-  }
-});
+app.get('/logout', function (req, res) {
+    req.session.destroy(function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect('/');
+        }
+    });
 });
 
 app.post('/loginUser', (req, res) => {
-      sess = req.session;
-    
-    var ps=jwt.sign(req.body.password,"abc");
-    var s={email:req.body.username,password:ps};
-    console.log(s);
+    sess = req.session;
+
+    var ps = jwt.sign(req.body.password, "abc");
+    var s = {
+        email: req.body.username,
+        password: ps
+    };
+    //console.log(s);
     //console.log(ps);
-    todo.findOne(s).then((todos)=>
-    {
-        if(!todos)
-        {
+    todo.findOne(s).then((todos) => {
+        if (!todos) {
             //res.redirect('/login');
             res.render('login.hbs', {
-            msg:"Entered Credential Wrong"
-        });
-                
-        }
-        else{
-             sess.email=req.body.username;
+                msg: "Entered Credential Wrong"
+            });
+
+        } else {
+            sess.email = req.body.username;
             res.redirect('/index');
         }
-        
-    },(err)=>{
+
+    }, (err) => {
         res.status(400).send(err);
-        
+
     });
 });
 
-app.get('/delete/:id', (req, res) => {
-    var id = req.params.id;
-    if (!ObjectID.isValid(id)) {
-        return res.status(404).send();
+app.post('/loginUser1', (req, res) => {
+    //sess = req.session;
+    //console.log("",req.body);
+    //var ps=jwt.sign(req.body.password,"abc");
+    var s = {
+        email: req.body.email
+    };
+    //console.log(s);
+    //console.log(ps);
+    todo.findOne(s).then((todos) => {
+            if (!todos)
+            {
+                res.send({err: "shahid"});
+                //console.log("err",todos);
+                //res.redirect('/login');
+                
+            }
+            else
+            {
+                res.send({todos});
+            }
+    });
+            
     }
-    user.findByIdAndRemove(id).then((todos) => {
-        if (!todos) {
+, (err) => {res.status(400).send(err);});
+
+
+app.get('/delete/:id', (req, res) => {
+
+    sess = req.session;
+    if (sess.email) {
+        var id = req.params.id;
+        if (!ObjectID.isValid(id)) {
             return res.status(404).send();
         }
-        /*res.send({
-            todos
-        });*/
-        res.redirect('/fetch');
-    }).catch((e) => {
-        res.status(400).send();
-    });
+        user.findByIdAndRemove(id).then((todos) => {
+            if (!todos) {
+                return res.status(404).send();
+            }
+            /*res.send({
+                todos
+            });*/
+            res.redirect('/fetch');
+        }).catch((e) => {
+            res.status(400).send();
+        });
+    } else {
+        res.redirect('/');
+    }
+
 });
 
 
@@ -179,10 +225,17 @@ app.delete('/todos/:id', (req, res) => {
 
 
 app.get('/fetch', (req, res) => {
-
-if(sess.email==='undefined')
-    {
-        res.redirect('/');    
+    // sess = req.session;
+    if (sess.email) {
+        user.find().then((todos) => {
+            res.render('../views/home.hbs', {
+                todos
+            });
+        }, (err) => {
+            res.status(400).send(err);
+        });
+    } else {
+        res.redirect('/login');
     }
     //res.send('<h1>hello express</h2>');
     /*res.send({
@@ -190,13 +243,7 @@ if(sess.email==='undefined')
         likes:["gadgets","games"]
     });*/
 
-    user.find().then((todos) => {
-    res.render('../views/home.hbs', {
-            todos
-        });
-    }, (err) => {
-        res.status(400).send(err);
-    });
+
 });
 
 
@@ -237,20 +284,20 @@ app.post('/todos', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-    
-    
-    var pass=jwt.sign(req.body.password,"abc");
-  //  console.log(pass);
+
+
+    var pass = jwt.sign(req.body.password, "abc");
+    //  console.log(pass);
     var td = new todo({
         email: req.body.email,
         password: pass
     });
-    var dec=jwt.verify(pass,"abc");
-   // console.log(dec);
+    var dec = jwt.verify(pass, "abc");
+    // console.log(dec);
     td.save().then((doc) => {
-         res.send(doc);
+        res.send(doc);
         //res.sendFile(__dirname + "/index.html");
-        
+
     }, (e) => {
         res.status(400).send(e);
     });

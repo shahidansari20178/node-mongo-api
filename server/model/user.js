@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 
-var user = mongoose.model('user4', {
+var user = mongoose.model('users', {
     name: {
         type: String,
         require: true,
