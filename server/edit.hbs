@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <title>Intro to Node and MongoDB</title>
+ </head>
+ 
+ <body>
+     <center>
+ <h1>Node and MongoDB</h1>
+ <form method="post" action="/update">
+ <label>Enter Your Information</label><br>
+ <input type="text" name='name'  placeholder="Enter name..." required value="{{todos.name}}">
+ <input type="text" name='salary' placeholder="Enter salary..." required value="{{todos.salary}}">
+     <input type="text" name='company'  placeholder="Enter Company name..." required value="{{todos.company}}">
+     <input type="hidden" name='id' placeholder="Enter salary..." required value="{{todos._id}}">
+ <input type="submit" value="Update">
+     
+     <br>
+     <a href="/fetch">Show List</a>
+     
+ </form>
+         <br>
+     <a href="/logout">logout</a>
+         </center>
+ </body>
+</html>

@@ -36,7 +36,7 @@ var {
 var sess;
 var app = express();
 console.log("shahid", __dirname);
-hbs.registerPartials(__dirname + '/views');
+//hbs.registerPartials(__dirname + '/views');
 app.use(bodyParser.json());
 //app.engine('hbs',hbs({extension:'hbs'}));
 app.use(bodyParser.urlencoded({
@@ -52,13 +52,13 @@ app.use("/index", (req, res) => {
     sess = req.session;
     //Session set when user Request our app via URL
     if (sess.email) {
-        res.render('./../views/index.hbs');
+        res.render('index.hbs');
     } else {
         res.redirect('/login');
     }
 });
 app.use("/login", (req, res) => {
-    res.render('./../views/login.hbs');
+    res.render('login.hbs');
 });
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
@@ -103,7 +103,7 @@ app.get('/edit/:id', (req, res) => {
 
         user.findById(id).then((todos) => {
             //console.log(todos);
-            res.render('./../views/edit.hbs', {
+            res.render('edit.hbs', {
                 todos
             });
         }, (err) => {
@@ -228,7 +228,7 @@ app.get('/fetch', (req, res) => {
     // sess = req.session;
     if (sess.email) {
         user.find().then((todos) => {
-            res.render('./../views/home.hbs', {
+            res.render('home.hbs', {
                 todos
             });
         }, (err) => {
