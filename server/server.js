@@ -52,13 +52,13 @@ app.use("/index", (req, res) => {
     sess = req.session;
     //Session set when user Request our app via URL
     if (sess.email) {
-        res.render('index.hbs');
+        res.render('./../views/index.hbs');
     } else {
         res.redirect('/login');
     }
 });
 app.use("/login", (req, res) => {
-    res.render('login.hbs');
+    res.render('./../views/login.hbs');
 });
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
@@ -103,7 +103,7 @@ app.get('/edit/:id', (req, res) => {
 
         user.findById(id).then((todos) => {
             //console.log(todos);
-            res.render('edit.hbs', {
+            res.render('./../views/edit.hbs', {
                 todos
             });
         }, (err) => {
@@ -228,7 +228,7 @@ app.get('/fetch', (req, res) => {
     // sess = req.session;
     if (sess.email) {
         user.find().then((todos) => {
-            res.render('../views/home.hbs', {
+            res.render('./../views/home.hbs', {
                 todos
             });
         }, (err) => {
